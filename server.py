@@ -1,10 +1,12 @@
+
+import os
 import json
 import time
 from fastapi import FastAPI, UploadFile
 from pydantic import BaseModel
 from model.components.books_recommendation import get_books
 from model.components.generate_mcqs import generate_mcqs
-from model.components.ocr import get_ocr_text
+from model.components.ocr import get_ocr_text, ocr_ppt, sum_ppt
 from model.components.describe import *
 from model.components.title_generation import generate_title
 from model.components.youtube_sr import yt_search
@@ -39,18 +41,36 @@ def read_root():
 @app.post("/ocr")
 def image_ocr(file: UploadFile):
     try:
-        raw_text = get_ocr_text(
-            {
-                "mime_type": file.content_type or "image/jpeg",
-                "data": file.file.read(),
+        print(file.content_type)
+        if file.content_type in ["image/jpeg", "image/png"]:
+            raw_text = get_ocr_text(
+                {
+                    "mime_type": file.content_type or "image/jpeg",
+                    "data": file.file.read(),
+                }
+            ).strip()
+            processed_text = raw_text.replace("\n", " ").strip()
+            return {
+                "status": "success",
+                "raw_ocr": raw_text,
+                "processed_ocr": processed_text,
             }
-        ).strip()
-        processed_text = raw_text.replace("\n", " ").strip()
-        return {
-            "status": "success",
-            "raw_ocr": raw_text,
-            "processed_ocr": processed_text,
-        }
+        
+        if file.content_type in ["application/vnd.openxmlformats-officedocument.presentationml.presentation", "application/vnd.ms-powerpoint"]:
+
+            ppt_ocr = ocr_ppt({
+                "file": file.file,
+            })
+
+            ppt_sum = sum_ppt(ppt_ocr)
+
+            return {
+                "status": "success",
+                "ppt_summary": ppt_sum,
+            }
+        
+        raise Exception("File type not supported")
+            
     except Exception as e:
         return {"status": "error", "message": str(e)}
 

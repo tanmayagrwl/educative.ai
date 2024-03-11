@@ -1,7 +1,12 @@
-from typing import TypedDict
+import re
+from typing import BinaryIO, TypedDict
 import google.generativeai as ai
 from model.genai import safety_settings
+from pptx.enum.shapes import MSO_SHAPE_TYPE
+from pptx import Presentation
+from transformers import pipeline
 
+summarizer = pipeline("summarization", model="Falconsai/text_summarization")
 
 generation_config = ai.GenerationConfig(
     temperature=0.4,
@@ -32,3 +37,41 @@ def get_ocr_text(file: ImageData):
             },
         ]
     ).text
+
+
+class PPTData(TypedDict):
+    file: BinaryIO
+
+
+def ocr_ppt(file: PPTData):
+    l2=[]
+    l3=[]
+    def visitor(shape, fname, file):
+        if shape.shape_type == MSO_SHAPE_TYPE.PICTURE:
+            print(" ")
+        elif hasattr(shape, "text"):
+            try:
+                text = shape.text
+                #print(text)
+                a=re.sub(r'[#]','',text)
+                l3.append(a)
+                b=a.split()
+                l2.append(len(b))
+                file.write(text + "\n")
+            except Exception as e:
+                print(f"Error writing text: {e}")
+
+    def iter_shapes(prs, fname, file):
+        for slide in prs.slides:
+            for shape in slide.shapes:
+                visitor(shape, fname, file)
+
+    prs = Presentation(file["file"])
+
+    iter_shapes(prs, file["file"].name or "Unknown", file["file"])
+    rw=' '.join(l3)
+
+    return re.sub(r'\s+', ' ', rw).strip()
+
+def sum_ppt(content: str):
+    return summarizer(content, max_length=len(content), min_length=30, do_sample=False)[0]["summary_text"]
