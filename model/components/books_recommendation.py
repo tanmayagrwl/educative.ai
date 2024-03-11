@@ -1,52 +1,54 @@
 from bs4 import BeautifulSoup
 import requests
 
-
-non_affiliated_links = [
-    "https://pdfdrive.com.co/",
-    "https://pdfdrive.com.co/about-us/",
-    "https://pdfdrive.com.co/category/",
-    "https://pdfdrive.com.co/contact-us/",
-    "https://pdfdrive.com.co/de/",
-    "https://pdfdrive.com.co/privacy-policy/",
-    "https://pdfdrive.com.co/terms/",
-    "https://pdfdrive.com.co",
-    "https://pdfdrive.com.co/",
-    "https://pdfdrive.com.co/category/",
-    "https://pdfdrive.com.co/novels/",
-    "https://pdfdrive.com.co/download-self-improvement-pdf/",
-    "https://pdfdrive.com.co/download-similar-free-ebooks/",
-    "https://pdfdrive.com.co/14-download-business-career-pdf/",
-    "https://pdfdrive.com.co/general-knowledge-books/",
-    "https://pdfdrive.com.co/biography/",
-    "https://pdfdrive.com.co/8-download-academic-education-pdf/",
-    "https://pdfdrive.com.co/financial/",
-    "https://pdfdrive.com.co/9-download-history-pdf/",
-    "https://pdfdrive.com.co/19-download-religion-pdf/",
-    "https://pdfdrive.com.co/contact-us/",
-    "https://pdfdrive.com.co/about-us/",
-    "https://pdfdrive.com.co/de/",
-    "https://pdfdrive.com.co/terms/",
-    "https://pdfdrive.com.co/privacy-policy/",
-    "https://www.facebook.com/profile.php?id=100094368993054",
-    "//www.dmca.com/Protection/Status.aspx?ID=fd7b2402-cdc6-467e-97bb-9bad0e2c7c5d",
-]
-
-
 def get_books(title: str):
-    url = f"https://pdfdrive.com.co/?s={title.lower()}"
+    url = f"https://libgen.is/search.php?req={title.lower().replace(' ', '+')}&open=0&res=25&view=simple&phrase=1&column=def"
     try:
-        response = requests.get(url)
-        response.raise_for_status()
-        links = []
-        html = BeautifulSoup(response.text, "html.parser")
-        links = html.find_all("a", href=True)
-        link_urls = [link["href"] for link in links]
-        link_urls = [
-            link
-            for link in link_urls
-            if "https://pdfdrive.com.co/" in link and link not in non_affiliated_links
-        ]
-        return link_urls
+      l123=[]
+      response = requests.get(url)
+      if response.status_code == 200:
+        soup = BeautifulSoup(response.content, "html.parser")
+        table = soup.find('table', class_='c')
+
+        if table:
+            results = []
+            rows = table.find_all('tr')
+            for row in rows[1:6]:
+                cells = row.find_all('td')
+                title_cell = cells[2]
+                title_link = title_cell.find('a', title=True)
+                title = title_link.contents[0] if title_link else "Unknown Title"
+                
+                links = cells[9].find_all('a')
+                download_link = links[0].get('href') if links else None
+                if download_link:
+                    response = requests.get(download_link)
+                    if response.status_code == 200:
+                        soup = BeautifulSoup(response.content, "html.parser")
+                        links = soup.find_all("a")
+
+                        for link in links:
+                            if "download.library.lol" in link.get('href'):
+                                k = f'http://library.lol/covers/{link.get("href").split("/")[4]}/{download_link.split("main/")[1].lower()}.jpg'
+                                k2 = f'http://library.lol/covers/{link.get("href").split("/")[4]}/{download_link.split("main/")[1].lower()}-d.jpg'
+                                k3 = f'http://library.lol/covers/{link.get("href").split("/")[4]}/{download_link.split("main/")[1].lower()}-g.jpg'
+                                re1 = requests.get(k)
+                                re2 = requests.get(k2)
+                                re3 = requests.get(k3)
+                                if re1.status_code == 200:
+                                    l123.append(k)
+                                elif re2.status_code == 200:
+                                    l123.append(k2)
+                                elif re3.status_code == 200:
+                                    l123.append(k3)
+
+                results.append({
+                    "title": title,
+                    "download_link": download_link,
+                    "cover_page": l123[0] if l123 else "Cover not found" 
+                })
+                l123.clear()
+            return results
     except Exception as e:
         return {"status": "error", "message": str(e)}
+get_books("maths")
