@@ -11,5 +11,6 @@ img = cv2.threshold(img, 100, 255, cv2.THRESH_BINARY)[1]
 img = cv2.GaussianBlur(img, (1, 1), 0)
 
 
-filename = str
-image = cv2.imread(filename)
+filename = str(input("Path":))
+image = cv2.imread(filename) # testing with a sample image
+
