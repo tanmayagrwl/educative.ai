@@ -27,6 +27,8 @@ import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { NotebookPen } from "lucide-react";
 async function fetchUploads(userId: string) {
 	const data = await db.from("uploads").select("*").eq("userId", userId);
+
+	console.log(data.data);
 	return data.data;
 }
 
@@ -99,7 +101,7 @@ function Blackboard() {
 										)}
 									</AccordionContent>
 								</AccordionItem>
-								<AccordionItem value="item-3">
+								{/* <AccordionItem value="item-3">
 									<AccordionTrigger>Reference Books</AccordionTrigger>
 									<AccordionContent>
 										{uploads[activeIndex]?.data?.books?.map((book) => {
@@ -118,7 +120,7 @@ function Blackboard() {
 											);
 										})}
 									</AccordionContent>
-								</AccordionItem>
+								</AccordionItem> */}
 								<AccordionItem value="item-4">
 									<AccordionTrigger>Test your Knowledge</AccordionTrigger>
 									<AccordionContent className="h-[250px] overflow-scroll">

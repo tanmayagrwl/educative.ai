@@ -9,7 +9,7 @@ import { Button } from './ui/button';
 
 const getSummary = async (content: string) => {
   const resp = await ky.post(
-    'https://black-board-ai-dwecloud1.replit.app/describe',
+    `${import.meta.env.VITE_BASE_URL}/describe`,
     {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ content }),

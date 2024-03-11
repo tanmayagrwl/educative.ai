@@ -7,6 +7,7 @@ import DoubtSolver from "./doubt-solver";
 import Pdfai from "./pdfai";
 import { Button } from "./ui/button";
 import Upload from "./upload";
+import Focus from "./focus";
 
 function Dashboard() {
 	const [activeTab, setActiveTab] = useState("Home");
@@ -62,12 +63,26 @@ function Dashboard() {
 							<button
 								type="button"
 								className={`w-full py-2 px-4 text-xl font-medium flex items-center  rounded-lg ${
-									activeTab === "blackboard.ai"
+									activeTab === "Focus"
 										? "text-white bg-zinc-800 hover:bg-zinc-700"
 										: "text-zinc-400 hover:text-zinc-400 "
 								}`}
 								onClick={() => {
-									handleTabClick("blackboard.ai");
+									handleTabClick("Focus");
+									toggleMenu();
+								}}
+							>
+								Focus ✨
+							</button>
+							<button
+								type="button"
+								className={`w-full py-2 px-4 text-xl font-medium flex items-center  rounded-lg ${
+									activeTab === "Educative.ai"
+										? "text-white bg-zinc-800 hover:bg-zinc-700"
+										: "text-zinc-400 hover:text-zinc-400 "
+								}`}
+								onClick={() => {
+									handleTabClick("Educative.ai");
 									toggleMenu();
 								}}
 							>
@@ -99,8 +114,9 @@ function Dashboard() {
 									toggleMenu();
 								}}
 							>
-								doubtSolver.Ai
+								Educative.Ai
 							</button>
+							
 						</div>
 					</div>
 				</div>
@@ -138,9 +154,11 @@ function Dashboard() {
 					</div>
 					<div className=" h-screen overflow-hidden">
 						{activeTab === "Home" && <Upload />}
-						{activeTab === "blackboard.ai" && <Blackboard />}
+						{activeTab === "Educative.ai" && <Blackboard />}
 						{activeTab === "Summarizer.Ai" && <Pdfai />}
 						{activeTab === "doubtSolver.Ai" && <DoubtSolver />}
+						{activeTab === "Focus" && <Focus />}
+
 					</div>
 				</div>
 			</div>

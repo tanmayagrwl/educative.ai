@@ -7,7 +7,7 @@ import { Input } from "./ui/input";
 
 const getSummary = async (content: string) => {
 	const resp = await ky.post(
-		"https://black-board-ai-dwecloud1.replit.app/describe",
+		`${import.meta.env.VITE_BASE_URL}/describe`,
 		{
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ content }),
@@ -21,7 +21,7 @@ const getSummary = async (content: string) => {
 const getYoutubeLinks = async (content: string) => {
 	const resp = await ky.get(
 		encodeURI(
-			`https://black-board-ai-dwecloud1.replit.app/get_youtube_links?title=${content}`,
+			`${import.meta.env.VITE_BASE_URL}/get_youtube_links?title=${content}`,
 		),
 		{ timeout: false },
 	);
@@ -32,7 +32,7 @@ const getYoutubeLinks = async (content: string) => {
 const getBooks = async (content: string) => {
 	const resp = await ky.get(
 		encodeURI(
-			`https://black-board-ai-dwecloud1.replit.app/get_books_recommendation?title=${content}`,
+			`${import.meta.env.VITE_BASE_URL}/get_books_recommendation?title=${content}`,
 		),
 		{ timeout: false },
 	);
@@ -42,7 +42,7 @@ const getBooks = async (content: string) => {
 
 const generateMcqs = async (content: string) => {
 	const resp = await ky.post(
-		"https://black-board-ai-dwecloud1.replit.app/generate_mcqs",
+		`${import.meta.env.VITE_BASE_URL}/generate_mcqs`,
 		{
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify({ content }),
@@ -65,7 +65,7 @@ function Upload() {
 
 		try {
 			const resp = await ky.post(
-				"https://black-board-ai-dwecloud1.replit.app/ocr",
+				`${import.meta.env.VITE_BASE_URL}/ocr`,
 				{
 					body: formData,
 					timeout: false,
@@ -79,7 +79,7 @@ function Upload() {
 			toast.loading("Generating title", { id: toastId });
 
 			const titleResponse = await ky.post(
-				"https://black-board-ai-dwecloud1.replit.app/generate_title",
+				`${import.meta.env.VITE_BASE_URL}/generate_title`,
 				{
 					headers: { "Content-Type": "application/json" },
 					body: JSON.stringify({ content: ocr_content }),

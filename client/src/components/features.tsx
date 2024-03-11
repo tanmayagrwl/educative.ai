@@ -11,7 +11,7 @@ export function TabsDemo() {
 				<div className="w-full overflow-hidden relative h-full rounded-2xl p-10 text-xl md:text-4xl font-bold text-white bg-gradient-to-br from-purple-700 to-violet-900">
 					<p>Upload Tab</p>
 					<img
-						src="/assets/upload.png"
+						src="/assets/upload1.png"
 						alt="dummy"
 						width="1000"
 						height="1000"
@@ -27,7 +27,7 @@ export function TabsDemo() {
 				<div className="w-full overflow-hidden relative h-full rounded-2xl p-10 text-xl md:text-4xl font-bold text-white bg-gradient-to-br from-purple-700 to-violet-900">
 					<p>Notes tab</p>
 					<img
-						src="/assets/blackboard.png"
+						src="/assets/blackboard1.png"
 						alt="dummy"
 						width="1000"
 						height="1000"
@@ -44,7 +44,7 @@ export function TabsDemo() {
 				<div className="w-full overflow-hidden relative h-full rounded-2xl p-10 text-xl md:text-4xl font-bold text-white bg-gradient-to-br from-purple-700 to-violet-900">
 					<p>Doubt Solver tab</p>
 					<img
-						src="/assets/doubtSolver.png"
+						src="/assets/doubtSolver1.png"
 						alt="dummy"
 						width="1000"
 						height="1000"
