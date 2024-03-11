@@ -114,7 +114,7 @@ function Dashboard() {
 									toggleMenu();
 								}}
 							>
-								Educative.Ai
+								DoubtSolver.Ai
 							</button>
 							
 						</div>

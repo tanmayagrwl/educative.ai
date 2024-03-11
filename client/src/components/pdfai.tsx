@@ -1,4 +1,12 @@
+// @ts-nocheck
+
 import ImageListTile from "./image-list-tile";
+import {
+	Accordion,
+	AccordionContent,
+	AccordionItem,
+	AccordionTrigger,
+} from "@/components/ui/accordion";
 
 import {
 	Drawer,
@@ -10,69 +18,81 @@ import {
 	DrawerTitle,
 	DrawerTrigger,
 } from "@/components/ui/drawer";
+import { db } from "@/lib/db";
+import useStore from "@/lib/store";
+import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
-import { FileTextIcon } from "@radix-ui/react-icons";
-function Pdfai() {
-	return (
-		<>
-			<div className="w-full flex h-full pt-16">
-				<div className=" flex items-center w-full m-4">
-					<div className="h-full  w-full max-w-xs  bg-gray-100 rounded-l-2xl px-4 hidden lg:block">
-						{" "}
-						<h3 className="pt-4 scroll-m-20 text-xl font-semibold tracking-tight pb-4 ">
-							Choose a Document{" "}
-						</h3>
-						{/* <ImageListTile Icon={<FileTextIcon className="scale-150" />} /> */}
-					</div>
-					{/* other side */}
-					<div className="w-full h-full flex flex-col items-center justify-around m-1 lg:m-10">
-						<div className=" w-full h-screen overflow-scroll bg-gray-100 gap-y-2 p-2 rounded-2xl">
-							<div className="flex flex-col gap-2">
-								<h3 className="m-2 scroll-m-20 text-2xl font-semibold tracking-tight">
-									Summary
-								</h3>
+import { Label } from "./ui/label";
+import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
+import { NotebookPen } from "lucide-react";
+async function fetchUploads(userId: string) {
+	const data = await db.from("ppts").select("*").eq("userId", userId);
 
-								<ul className="my-6 ml-6 list-disc [&>li]:mt-2">
-									<li>1st level of puns: 5 gold coins</li>
-									<li>2nd level of jokes: 10 gold coins</li>
-									<li>3rd level of one-liners : 20 gold coins</li>
-								</ul>
-							</div>
+	console.log(data.data);
+	return data.data;
+}
+
+function Blackboard() {
+	const [uploads, setUploads] = useState<object[]>([]);
+	const [activeIndex, setActiveIndex] = useState(0);
+	const user = useStore((store) => store.user);
+
+	useEffect(() => {
+		(async () => {
+			const data = await fetchUploads(user?.id);
+			setUploads(data || []);
+		})();
+	}, [user]);
+
+	useEffect(() => {
+		console.log(uploads);
+	}, [uploads]);
+
+	return (
+		<div className="w-full flex h-full pt-16">
+			<div className=" flex items-center w-full m-4">
+				<div className="h-full  w-full max-w-xs  bg-gray-100 rounded-l-2xl px-4 hidden md:block">
+					{" "}
+					<h3 className="pt-4 scroll-m-20 text-xl font-semibold tracking-tight pb-4 ">
+						Choose a PPT
+					</h3>
+					{uploads.map((upload, index) => (
+						<ImageListTile
+							key={upload.title}
+							Icon={<NotebookPen className="w-10" />}
+							text={upload.title}
+							activeTab={activeIndex === index}
+							handleTabClick={() => setActiveIndex(index)}
+						/>
+					))}
+				</div>
+				{/* other side */}
+				<div className="w-full h-full flex flex-col items-center m-1 lg:m-10">
+					<div className=" w-full bg-gray-100 gap-y-5 p-4 rounded-lg h-full">
+						<div className="flex flex-col gap-2 p-4">
+							<Label className="text-2xl font-bold" >Summary</Label>
+							<p className="text-lg">
+								{
+									uploads[activeIndex]?.content
+								}
+							</p>
+
+							<Accordion type="single" collapsible>
+								<AccordionItem value="item1">
+									<AccordionTrigger>
+										<Label>Original Content</Label>
+									</AccordionTrigger>
+									<AccordionContent className="h-[400px] overflow-scroll">
+										{uploads[activeIndex]?.original}
+									</AccordionContent>
+								</AccordionItem>
+							</Accordion>
 						</div>
-						<div className="block lg:hidden">
-							<Drawer>
-								<DrawerTrigger>
-									<Button>Choose Document</Button>
-								</DrawerTrigger>
-								<DrawerContent>
-									<DrawerHeader>
-										<DrawerTitle>Choose a Document</DrawerTitle>
-										<DrawerDescription>
-											Choose a Document from the list below to get started.
-										</DrawerDescription>
-									</DrawerHeader>
-									<div className=" flex items-center jus w-full m-4">
-										<div className="h-full  w-full max-w-xs   px-4">
-											{" "}
-											{/* <ImageListTile
-                        Icon={<FileTextIcon className="scale-150" />}
-                      /> */}
-										</div>
-									</div>
-									<DrawerFooter>
-										<Button>Submit</Button>
-										<DrawerClose>
-											<Button variant="outline">Cancel</Button>
-										</DrawerClose>
-									</DrawerFooter>
-								</DrawerContent>
-							</Drawer>
 						</div>
-					</div>
 				</div>
 			</div>
-		</>
+		</div>
 	);
 }
 
-export default Pdfai;
+export default Blackboard;

@@ -79,6 +79,7 @@ def image_ocr(file: UploadFile):
             return {
                 "status": "success",
                 "ppt_summary": ppt_sum,
+                "raw": ppt_ocr
             }
         
         raise Exception("File type not supported")

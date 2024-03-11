@@ -63,59 +63,102 @@ function Upload() {
 
 		toast.loading("Uploading...", { id: toastId });
 
-		try {
-			const resp = await ky.post(
-				`${import.meta.env.VITE_BASE_URL}/ocr`,
-				{
-					body: formData,
-					timeout: false,
-				},
-			);
+		if ((formData.get("file") as File).type === "application/vnd.openxmlformats-officedocument.presentationml.presentation") {
+			try {
+				toast.loading("Generating Summary", { id: toastId });
+				const resp = await ky.post(
+					`${import.meta.env.VITE_BASE_URL}/ocr`,
+					{
+						body: formData,
+						timeout: false,
+					},
+				);
 
-			const respData = (await resp.json()) as { processed_ocr: string };
+				const respData = (await resp.json()) as { ppt_summary: string, raw: string };
 
-			const ocr_content = respData.processed_ocr;
+				const ocr_content = respData.ppt_summary;
+				const raw = respData.raw;
 
-			toast.loading("Generating title", { id: toastId });
+				toast.loading("Generating title", { id: toastId });
 
-			const titleResponse = await ky.post(
-				`${import.meta.env.VITE_BASE_URL}/generate_title`,
-				{
-					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({ content: ocr_content }),
-					timeout: false,
-				},
-			);
+				const titleResponse = await ky.post(
+					`${import.meta.env.VITE_BASE_URL}/generate_title`,
+					{
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ content: ocr_content }),
+						timeout: false,
+					},
+				);
 
-			const titleData = (await titleResponse.json()) as { title: string };
-			const title = titleData.title || "Untitled";
+				const titleData = (await titleResponse.json()) as { title: string };
 
-			toast.loading("Generating summary, links, books and mcqs", {
-				id: toastId,
-			});
+				const title = titleData.title || "Untitled";
 
-			const [summary, links, books, mcqs] = await Promise.all([
-				getSummary(ocr_content),
-				getYoutubeLinks(title),
-				getBooks(title),
-				generateMcqs(ocr_content),
-			]);
+				await db
+					.from("ppts")
+					.insert({ title, content: ocr_content, userId: user?.id, original: raw })
+					.single();
+	
+				toast.success("Uploaded", { id: toastId });
 
-			const data = {
-				summary,
-				links,
-				books,
-				mcqs,
-			};
-
-			await db
-				.from("uploads")
-				.insert({ title, content: ocr_content, userId: user?.id, data })
-				.single();
-
-			toast.success("Uploaded", { id: toastId });
-		} catch (error) {
-			toast.error("Failed to upload", { id: toastId });
+			} catch (error) {
+				toast.error("Failed to upload", { id: toastId });
+			}
+		} else {
+			try {
+				const resp = await ky.post(
+					`${import.meta.env.VITE_BASE_URL}/ocr`,
+					{
+						body: formData,
+						timeout: false,
+					},
+				);
+	
+				const respData = (await resp.json()) as { processed_ocr: string };
+	
+				const ocr_content = respData.processed_ocr;
+	
+				toast.loading("Generating title", { id: toastId });
+	
+				const titleResponse = await ky.post(
+					`${import.meta.env.VITE_BASE_URL}/generate_title`,
+					{
+						headers: { "Content-Type": "application/json" },
+						body: JSON.stringify({ content: ocr_content }),
+						timeout: false,
+					},
+				);
+	
+				const titleData = (await titleResponse.json()) as { title: string };
+				const title = titleData.title || "Untitled";
+	
+				toast.loading("Generating summary, links, books and mcqs", {
+					id: toastId,
+				});
+	
+				const [summary, links, books, mcqs] = await Promise.all([
+					getSummary(ocr_content),
+					getYoutubeLinks(title),
+					getBooks(title),
+					generateMcqs(ocr_content),
+				]);
+	
+				const data = {
+					summary,
+					links,
+					books,
+					mcqs,
+				};
+	
+				await db
+					.from("uploads")
+					.insert({ title, content: ocr_content, userId: user?.id, data })
+					.single();
+	
+				toast.success("Uploaded", { id: toastId });
+			} catch (error) {
+				toast.error("Failed to upload", { id: toastId });
+			}
 		}
 	}
 
@@ -133,7 +176,7 @@ function Upload() {
 							name="file"
 							multiple={false}
 							className="flex items-center justify-center"
-							accept="image/*"
+							accept="image/*, application/vnd.openxmlformats-officedocument.presentationml.presentation"
 							required
 						/>
 						<Button type="submit" className="w-full">
