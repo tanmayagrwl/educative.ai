@@ -74,4 +74,5 @@ def ocr_ppt(file: PPTData):
     return re.sub(r'\s+', ' ', rw).strip()
 
 def sum_ppt(content: str):
-    return summarizer(content, max_length=len(content), min_length=30, do_sample=False)[0]["summary_text"]
+    sum = summarizer(content, max_length=1000, min_length=30, do_sample=False)[0]["summary_text"]
+    return re.sub(r'\s+', ' ', sum).strip()

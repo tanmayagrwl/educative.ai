@@ -1,6 +1,6 @@
-
 import os
 import json
+
 import time
 from fastapi import FastAPI, UploadFile
 from pydantic import BaseModel
@@ -11,6 +11,7 @@ from model.components.describe import *
 from model.components.title_generation import generate_title
 from model.components.youtube_sr import yt_search
 from fastapi.middleware.cors import CORSMiddleware
+from pptx import Presentation
 
 start_time = time.time()
 
@@ -58,9 +59,20 @@ def image_ocr(file: UploadFile):
         
         if file.content_type in ["application/vnd.openxmlformats-officedocument.presentationml.presentation", "application/vnd.ms-powerpoint"]:
 
-            ppt_ocr = ocr_ppt({
-                "file": file.file,
-            })
+            payload = {
+                "file": file.file
+            }
+
+            if file.content_type == "application/vnd.ms-powerpoint":
+                pptx_ppt = Presentation(file.file)
+                pptx_ppt.save("temp.pptx")
+
+                payload = {
+                    "file": open("temp.pptx", "rb")
+                }
+
+
+            ppt_ocr = ocr_ppt(payload)
 
             ppt_sum = sum_ppt(ppt_ocr)
 
