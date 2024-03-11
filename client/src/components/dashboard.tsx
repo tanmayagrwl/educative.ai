@@ -34,7 +34,7 @@ function Dashboard() {
 					<div className="flex flex-col items-start h-screen">
 						<div className="flex w-full justify-between ">
 							<h1 className="scroll-m-20 text-3xl font-extrabold tracking-tight lg:text-3xl font-montserrat text-white pt-4 ml-10">
-							Educative.ai
+								Educative.ai
 							</h1>
 							<button
 								type="button"
@@ -73,7 +73,20 @@ function Dashboard() {
 							>
 								Educative.ai
 							</button>
-
+							<button
+								type="button"
+								className={`w-full py-2 px-4 text-xl font-medium flex items-center  rounded-lg ${
+									activeTab === "Summarizer.Ai"
+										? "text-white bg-zinc-800 hover:bg-zinc-700"
+										: "text-gray-400 hover:text-gray-400 "
+								}`}
+								onClick={() => {
+									handleTabClick("Summarizer.Ai");
+									toggleMenu();
+								}}
+							>
+								Summarizer.Ai
+							</button>
 							<button
 								type="button"
 								className={`w-full py-2 px-4 text-xl font-medium flex items-center  rounded-lg ${
@@ -126,7 +139,7 @@ function Dashboard() {
 					<div className=" h-screen overflow-hidden">
 						{activeTab === "Home" && <Upload />}
 						{activeTab === "blackboard.ai" && <Blackboard />}
-						{activeTab === "PDF.Ai" && <Pdfai />}
+						{activeTab === "Summarizer.Ai" && <Pdfai />}
 						{activeTab === "doubtSolver.Ai" && <DoubtSolver />}
 					</div>
 				</div>
