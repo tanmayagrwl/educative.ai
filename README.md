@@ -39,5 +39,5 @@ Educative.AI is more than just a note-taking app. It's your personalized study c
 
 ## PPT and Screenshots of the application
 [Team Heisenberg presentation.pptx](https://github.com/aryanraj2713/BlackBoard.AI/files/14227930/Team.Heisenberg.presentation.pptx)
-![Medium](https://github.com/aryanraj2713/BlackBoard.AI/assets/86347805/43f00fe4-023c-427e-87db-01f8dbef248a)
+:: ![Medium](https://github.com/aryanraj2713/BlackBoard.AI/assets/86347805/43f00fe4-023c-427e-87db-01f8dbef248a)
 
