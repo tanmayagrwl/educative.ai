@@ -124,7 +124,7 @@ function Upload() {
       <div className="flex flex-col w-full h-full justify-around items-center bg-[#F1F5F9]">
         <div className=" flex flex-col items-center justify-center px-10 h-[50vh] shadow-md rounded-2xl mx-5 sm:mx-5 lg:mx-0">
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-3xl font-montserrat text-sky-900 pb-12">
-            blackboard.ai
+          Educative.ai
           </h1>
           <div className="text-lg font-semibold pb-7">Upload your file</div>
           <form className="space-y-4" onSubmit={handleUpload}>

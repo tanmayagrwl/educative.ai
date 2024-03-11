@@ -34,7 +34,7 @@ function Dashboard() {
 					<div className="flex flex-col items-start h-screen">
 						<div className="flex w-full justify-between ">
 							<h1 className="scroll-m-20 text-3xl font-extrabold tracking-tight lg:text-3xl font-montserrat text-white pt-4 ml-10">
-								blackboard.ai
+							Educative.ai
 							</h1>
 							<button
 								type="button"
@@ -71,7 +71,7 @@ function Dashboard() {
 									toggleMenu();
 								}}
 							>
-								blackboard.ai
+								Educative.ai
 							</button>
 
 							<button

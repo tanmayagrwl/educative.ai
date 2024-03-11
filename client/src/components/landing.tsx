@@ -30,7 +30,7 @@ function Landing() {
             />
           </div>
           <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-8xl text-sky-900">
-            blackboard.ai
+          Educative.ai
           </h1>
           <h3 className="mt-8 scroll-m-20 text-3xl font-semibold tracking-tight text-sky-950">
             Your one stop edu Assistant

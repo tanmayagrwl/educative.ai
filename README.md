@@ -1,11 +1,11 @@
-# Blackboard.AI: Your All-in-One Student Helper App
+# Educative.AI: Your All-in-One Student Helper App
 
 ![Untitled design-2](https://github.com/aryanraj2713/BlackBoard.AI/assets/75358720/d34a5f86-e682-4cbb-9c58-f92709b0c85e)
 
 
-Are you struggling to keep up with handwritten notes or drowning in information overload? Enter Blackboard.AI, your ultimate study companion designed to simplify learning, boost understanding, and maximize your grades.
+Are you struggling to keep up with handwritten notes or drowning in information overload? Enter Educative.AI, your ultimate study companion designed to simplify learning, boost understanding, and maximize your grades.
 
-## How Blackboard.AI Empowers You:
+## How Educative.AI Empowers You:
 
 ### Effortless Note-Taking:
 
@@ -21,11 +21,11 @@ Are you struggling to keep up with handwritten notes or drowning in information 
 
 ### Master the Material:
 
-- **Upload & Analyze:** Share your PPTs and PDF notes with Blackboard.AI to automatically generate crucial questions and key points.
+- **Upload & Analyze:** Share your PPTs and PDF notes with Educative.AI to automatically generate crucial questions and key points.
 - **Focus on What Matters:** Filter through information overload and identify the most important concepts for deeper understanding.
 - **Ace the Exam:** Prepare effectively with targeted practice and review based on your specific learning needs.
 
-Blackboard.AI is more than just a note-taking app. It's your personalized study coach, always by your side to help you learn smarter, study efficiently, and achieve academic success.
+Educative.AI is more than just a note-taking app. It's your personalized study coach, always by your side to help you learn smarter, study efficiently, and achieve academic success.
 
 ## Get Started Today and Unlock Your Full Learning Potential!
 

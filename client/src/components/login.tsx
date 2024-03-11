@@ -28,7 +28,7 @@ function Login() {
           <div className="flex flex-col space-y-2 text-center">
             {/* <Icons.logo className="mx-auto h-6 w-6" /> */}
             <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl font-montserrat text-sky-900">
-              blackboard.ai
+            Educative.ai
             </h1>
             <p className="leading-7 [&:not(:first-child)]:mt-6">
               Sign up to get started
