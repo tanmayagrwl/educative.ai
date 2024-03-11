@@ -38,6 +38,6 @@ Educative.AI is more than just a note-taking app. It's your personalized study c
 - **Responsiveness:** Can be used from device of any standard screen size. 
 
 ## PPT and Screenshots of the application
-[Team Heisenberg presentation.pptx](https://github.com/aryanraj2713/BlackBoard.AI/files/14227930/Team.Heisenberg.presentation.pptx)
-REM ![Medium](https://github.com/aryanraj2713/BlackBoard.AI/assets/86347805/43f00fe4-023c-427e-87db-01f8dbef248a)
+[Team.Heisenberg.pptx](https://github.com/tanmayagrwl/educative.ai/files/14563266/Team.Heisenberg.pptx)
+
 
