@@ -85,7 +85,7 @@ function Upload() {
 					`${import.meta.env.VITE_BASE_URL}/generate_title`,
 					{
 						headers: { "Content-Type": "application/json" },
-						body: JSON.stringify({ content: ocr_content }),
+						body: JSON.stringify({ content: ocr_content	 }),
 						timeout: false,
 					},
 				);
@@ -129,8 +129,9 @@ function Upload() {
 					},
 				);
 	
-				const titleData = (await titleResponse.json()) as { title: string };
+				const titleData = (await titleResponse.json()) as { title: string, search_term: string };
 				const title = titleData.title || "Untitled";
+				const search_term = titleData.search_term;
 	
 				toast.loading("Generating summary, links, books and mcqs", {
 					id: toastId,
@@ -139,7 +140,7 @@ function Upload() {
 				const [summary, links, books, mcqs] = await Promise.all([
 					getSummary(ocr_content),
 					getYoutubeLinks(title),
-					getBooks(title),
+					getBooks(search_term),
 					generateMcqs(ocr_content),
 				]);
 	

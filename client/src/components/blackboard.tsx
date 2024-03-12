@@ -101,26 +101,29 @@ function Blackboard() {
 										)}
 									</AccordionContent>
 								</AccordionItem>
-								{/* <AccordionItem value="item-3">
+								<AccordionItem value="item-3">
 									<AccordionTrigger>Reference Books</AccordionTrigger>
 									<AccordionContent>
 										{uploads[activeIndex]?.data?.books?.map((book) => {
-											const formattedBookName = new URL(book).pathname
-												.split("/")
-												.pop()
-												?.replace(/-/g, " ");
 											return (
 												<a
-													key={book}
-													href={book}
+													key={book.title}
+													href={book.download}
 													className="flex items-center gap-2 px-2 py-1 border bg-gray-100 rounded"
 												>
-													{formattedBookName}
+													<img
+														src={book.cover}
+														alt=""
+														className="h-10 w-10 object-cover"
+													/>
+													<div>
+														<h4 className="text-sm font-semibold">{book.title}</h4>
+													</div>
 												</a>
 											);
 										})}
 									</AccordionContent>
-								</AccordionItem> */}
+								</AccordionItem>
 								<AccordionItem value="item-4">
 									<AccordionTrigger>Test your Knowledge</AccordionTrigger>
 									<AccordionContent className="h-[250px] overflow-scroll">

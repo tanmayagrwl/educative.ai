@@ -8,7 +8,7 @@ from model.components.books_recommendation import get_books
 from model.components.generate_mcqs import generate_mcqs
 from model.components.ocr import get_ocr_text, ocr_ppt, sum_ppt
 from model.components.describe import *
-from model.components.title_generation import generate_title
+from model.components.title_generation import generate_search_term, generate_title
 from model.components.youtube_sr import yt_search
 from fastapi.middleware.cors import CORSMiddleware
 from pptx import Presentation
@@ -108,9 +108,11 @@ def image_describe(body: DescribeRequest):
 def get_title(body: DescribeRequest):
     try:
         title = generate_title(body.content)
+        search_term = generate_search_term(body.content)
         return {
             "status": "success",
             "title": title,
+            "search_term": search_term,
         }
     except Exception as e:
         return {"status": "error", "message": str(e)}
@@ -145,6 +147,7 @@ def get_youtube_links(title: str, limit: int = 3):
 def get_books_recommendation(title: str):
     try:
         links = get_books(title)
+        print(links)
         return {
             "status": "success",
             "links": links,
