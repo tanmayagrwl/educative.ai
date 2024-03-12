@@ -21,12 +21,33 @@ import {
 	TableRow,
   } from "@/components/ui/table"
 import { Button } from "./ui/button";
-import { useState } from "react";
-function Focus() {
-    const [start, setStart] = useState(false);
+import { useEffect, useState } from "react";
+import { db } from "@/lib/db";
+import { toast } from "sonner";
+import useStore from "@/lib/store";
 
-	const [activeTab, setActiveTab] = useState("Monday");
+interface Session { day: string; start: Date; end: Date; subject: string } 
+
+function formatTime(date: Date) {
+	return date.toLocaleTimeString("en-US", {
+		hour: "2-digit",
+		minute: "2-digit",
+	});
+}
+
+const weeks = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const day = weeks[new Date().getDay() - 1].toLowerCase();
+
+console.log(day);
+
+function Focus() {
+	const [subject, setSubject] = useState("");
+    const [session, setSession] = useState<Session | null>();
+
+	const [activeTab, setActiveTab] = useState(day);
+	const [sessions, setSessions] = useState<Session[]>([]);
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
+	const user = useStore((store) => store.user);
 
 	const handleTabClick = (tab: string) => {
 		setActiveTab(tab);
@@ -35,6 +56,26 @@ function Focus() {
 	const toggleMenu = () => {
 		setIsMenuOpen(!isMenuOpen);
 	};
+
+	const fetchSessions = async () => {
+		try {
+			const response = await db.from("focus").select("*").eq("day", activeTab).eq("userId", user?.id);
+			if (response.error) {
+				toast.error(response.error.message);
+				return;
+			}
+
+			const data = response.data as Session[];
+			setSessions(data);
+		} catch (error) {
+			console.error(error);
+		}
+	}
+
+	useEffect(() => {
+		fetchSessions();
+	}, [activeTab])
+
 
 	return (
 		<>
@@ -63,116 +104,70 @@ function Focus() {
 							</button>
 						</div>
 						<div className="flex flex-col items-end h-[75vh] justify-center w-full gap-2 px-3 ">
-							<button
+							{weeks.map((day) => (
+								<button
 								type="button"
 								className={`w-full py-2 px-4 text-xl font-medium flex items-center  rounded-lg ${
-									activeTab === "Monday"
+									activeTab === day.toLowerCase()
 										? "text-white bg-zinc-800 hover:bg-zinc-700"
 										: "text-zinc-400 hover:text-zinc-400 "
 								}`}
 								onClick={() => {
-									handleTabClick("Monday");
+									handleTabClick(day.toLowerCase());
 									toggleMenu();
 								}}
 							>
-								Monday
+								{day}
 							</button>
-							<button
-								type="button"
-								className={`w-full py-2 px-4 text-xl font-medium flex items-center  rounded-lg ${
-									activeTab === "Tuesday"
-										? "text-white bg-zinc-800 hover:bg-zinc-700"
-										: "text-zinc-400 hover:text-zinc-400 "
-								}`}
-								onClick={() => {
-									handleTabClick("Tuesday");
-									toggleMenu();
-								}}
-							>
-								Tuesday
-							</button>
-							<button
-								type="button"
-								className={`w-full py-2 px-4 text-xl font-medium flex items-center  rounded-lg ${
-									activeTab === "Wednesday"
-										? "text-white bg-zinc-800 hover:bg-zinc-700"
-										: "text-zinc-400 hover:text-zinc-400 "
-								}`}
-								onClick={() => {
-									handleTabClick("Wednesday");
-									toggleMenu();
-								}}
-							>
-								Wednesday
-							</button>
-							<button
-								type="button"
-								className={`w-full py-2 px-4 text-xl font-medium flex items-center  rounded-lg ${
-									activeTab === "Thursday"
-										? "text-white bg-zinc-800 hover:bg-zinc-700"
-										: "text-gray-400 hover:text-gray-400 "
-								}`}
-								onClick={() => {
-									handleTabClick("Thursday");
-									toggleMenu();
-								}}
-							>
-								Thursday
-							</button>
-							<button
-								type="button"
-								className={`w-full py-2 px-4 text-xl font-medium flex items-center  rounded-lg ${
-									activeTab === "Friday"
-										? "text-white bg-zinc-800 hover:bg-zinc-700"
-										: "text-gray-400 hover:text-gray-400 "
-								}`}
-								onClick={() => {
-									handleTabClick("Friday");
-									toggleMenu();
-								}}
-							>
-								Friday
-							</button>
-							<button
-								type="button"
-								className={`w-full py-2 px-4 text-xl font-medium flex items-center  rounded-lg ${
-									activeTab === "Saturday"
-										? "text-white bg-zinc-800 hover:bg-zinc-700"
-										: "text-gray-400 hover:text-gray-400 "
-								}`}
-								onClick={() => {
-									handleTabClick("Saturday");
-									toggleMenu();
-								}}
-							>
-								Saturday
-							</button>
-							<button
-								type="button"
-								className={`w-full py-2 px-4 text-xl font-medium flex items-center  rounded-lg mb-10 ${
-									activeTab === "Sunday"
-										? "text-white bg-zinc-800 hover:bg-zinc-700"
-										: "text-gray-400 hover:text-gray-400 "
-								}`}
-								onClick={() => {
-									handleTabClick("Sunday");
-									toggleMenu();
-								}}
-							>
-								Sunday
-							</button>
+							))}
 							<div className=" flex gap-5">
-							{start && ( 
-								
-									<Input type="text" placeholder="Whatcha studying?" />
-								
-								)}
+							<Input disabled={!!session?.start} type="text" placeholder="Whatcha studying?" onChange={(e) => {
+								setSubject(e.target.value);
+							}} value={subject} />
+
+
+							{
+								session?.start ? (
+							<Button onClick={async ()=>{
+									const end = new Date()
+									const response = await db.from("focus").insert({
+										...session,
+										end,
+										userId: user?.id,
+									});
+									if (response.error) {
+										toast.error(response.error.message);
+										return;
+									}
+									setSubject("");
+									setSession(null);
+									fetchSessions();
+							}}>
+									  Stop
+								</Button>
+									
+								) : (
+									<Button onClick={async ()=>{
+
+										if (!subject.trim()) {
+											toast.error("Please enter a subject");
+											return;
+										}
+			
+										setSession({
+											subject,
+											start: new Date(),
+											end: new Date(),
+											day,
+										});
+									}}>
+											  Start
+										</Button>
+									
+								)
+							}
  						
-						<Button onClick={()=>{setStart(!start)}}>
-  								{start ? <p>Start</p> : <p>End</p>}
-							</Button>
 							</div>
-							<Button>Reset</Button>
 						</div>
 					</div>
 				</div>
@@ -190,20 +185,29 @@ function Focus() {
   <TableHeader>
     <TableRow>
       <TableHead className="">Start time</TableHead>
-	  <TableHead className="">Total time</TableHead>
       <TableHead>Ending time</TableHead>
+	  <TableHead className="">Total time</TableHead>
       <TableHead className=" w-[100px]">Subject</TableHead>
     </TableRow>
   </TableHeader>
 
   <TableBody>
-    <TableRow>
-      <TableCell className="font-medium">10:00 AM</TableCell>
-      <TableCell>13:00 AM</TableCell>
-	  <TableCell>2 hours</TableCell>
+	{
+		sessions.map((session, index) => {
 
-      <TableCell>Calculus</TableCell>
-    </TableRow>
+			const startTime = new Date(session.start);
+			const endTime = new Date(session.end);
+			const diff = Math.floor((endTime.getTime() - startTime.getTime()) / 60000);
+
+
+			return (<TableRow key={index}>
+				<TableCell className="font-medium">{formatTime(startTime)}</TableCell>
+				<TableCell>{formatTime(new Date(session.end))}</TableCell>
+				<TableCell className="font-medium">{diff} mins</TableCell>
+				<TableCell>{session.subject}</TableCell>
+			</TableRow>)
+		})
+	}
   </TableBody>
 </Table>
 
