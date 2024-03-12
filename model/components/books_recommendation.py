@@ -29,7 +29,7 @@ def get_books(name: str):
         download = row.select_one('td a[href^="http"]')["href"]
 
         # cover
-        cover = f"https://libgen.is/covers/1000/{download.split("/")[-1].lower()}-d.jpg"
+        cover = f"https://libgen.is/covers/1000/{download.split('/')[-1].lower()}-d.jpg"
 
         books.append({"title": title, "download": download, "cover": cover})
 
